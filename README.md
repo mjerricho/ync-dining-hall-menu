@@ -1,4 +1,4 @@
-# SATS_Scraping
+# YNCDiningHallMenu_bot
 
 ## Project Description
 This project aims to scrape the Yale-NUS dining hall website and send daily meals to a telegram group. We have noticed that going on the dining hall website takes a while as users will have to go through a login process. As the community uses Telegram as the main messaging platform, we have decided to try and make this process of checking today's dining hall menu a much more efficient process by bringing the message to the community. 
@@ -7,7 +7,9 @@ We utilized the Selenium library to interact with the web for the project. Selen
 
 Additionally, we can provide more functions to generate more customised messages, such as the meal with the most protein or the least calories, to help students and faculty adhere to their diet. 
 
-The project repository can be found at https://github.com/mjerricho/ync-dining-hall-menu.git.
+The project repository can be found at https://github.com/mjerricho/ync-dining-hall-menu.git
+
+To join the Telegram Channel where we generate the messages, join this group https://t.me/YNCDiningMenu
 
 ## Installation
 1. [Add Username and Password as environment variables.](https://phoenixnap.com/kb/set-environment-variable-mac).
