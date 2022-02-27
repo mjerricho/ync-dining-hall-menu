@@ -187,7 +187,7 @@ f'''_{meal.get(meal_property, None)}_'''])
         '''
         if self.day == Day.WEEKDAY:
             return f'''*Dining Hall Meals For Today*
-{self.craft_message_menu(self.breakfast_menu, "BRUNCH")}
+{self.craft_message_menu(self.breakfast_menu, "BREAKFAST")}
 {self.craft_message_menu(self.lunch_menu, "LUNCH")}
 {self.craft_message_menu(self.dinner_menu, "DINNER")}'''
         else:
