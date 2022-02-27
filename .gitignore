@@ -138,3 +138,6 @@ chromedriver*
 
 .DS_Store
 .pytest_cache/
+
+# automator
+ync-dining-menu-automator.app

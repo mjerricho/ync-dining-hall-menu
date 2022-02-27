@@ -24,5 +24,11 @@ To deactivate virtual environment, run `deactivate`.
 ### To run
 Run `python3 Runner.py`.
 
+### To check which chat groups the bot is in:
+Get `https://api.telegram.org/bot<TOKEN>/GetUpdates`. Replace the `<TOKEN>` with the `/token` in botfather.
+
+### To send messages
+Get `https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<CHATID>&parse_mode=Markdown&text=<MESSAGE>`.
+
 ### Disclaimer
 _SATS_Scraping contain links to external websites that are not provided or maintained by us. Please note we do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites._

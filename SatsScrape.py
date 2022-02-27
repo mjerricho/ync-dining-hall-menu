@@ -43,7 +43,7 @@ class SatsScrape:
         self.dinner_links = []
         self.dinner_menu = []
         self.tele_bot_api = os.environ.get('BOTAPI')
-        self.chat_ids = ["-799638512", "-1001625632323"]
+        self.chat_ids = ["-1001625632323"]
         print("Webdriver initialised")
         print("-----------------")
     
