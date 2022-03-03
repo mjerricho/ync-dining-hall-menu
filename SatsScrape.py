@@ -31,7 +31,6 @@ class SatsScrape:
         self.user = os.environ.get('USER')
         self.password = os.environ.get('PASSWORD')
         self.day = day
-        self.nutrition = ("Calorie", "Protein", "Carbs", "Fat")
         # meal links
         if day == Day.WEEKDAY:
             self.breakfast_links = []
@@ -78,7 +77,6 @@ class SatsScrape:
             # breakfast
             while True:
                 try:
-                    print("finding")
                     xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[2]/div/div[2]/div/div[' + str(i) + ']/a'
                     element = self.driver.find_element_by_xpath(xpath)
                     self.breakfast_links.append(element.get_attribute('href'))
@@ -137,13 +135,19 @@ class SatsScrape:
         time.sleep(1)
         name = self.driver.find_element_by_xpath('//*[@id="signup-modal-slide-description"]/div/div/div[2]/h3').text
         stats = {"name": name}
-        for i in range(1, 5):
+        i = 1
+        while True:
             try:
                 stat_full = self.driver.find_element_by_xpath("/html/body/div[2]/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div/div/div/div/p["+str(i)+"]")
-                stat_str = stat_full.text.split(" ")[-1]
-                stat_float = float(re.findall(r'\d+', stat_str)[0])
-                stats[self.nutrition[i - 1]] = stat_float
-            except NoSuchElementException: pass
+                print(stat_full.text.split(" "))
+                stat_split = stat_full.text.split(" ")
+                stat_name = stat_split[1][:-1]
+                stat_value = stat_split[-1]
+                stat_float = float(re.findall(r'\d+', stat_value)[0])
+                stats[stat_name] = stat_float
+                i += 1
+            except NoSuchElementException: 
+                break
         return stats
     
     def get_all_meals(self):
@@ -153,16 +157,17 @@ class SatsScrape:
         '''
         print("Getting the stats for all meals.")
         print("-----------------")
-        if self.day == Day.WEEKDAY:   
-            for i in range(4):
-                if i < 3:
-                    self.breakfast_menu.append(self.get_stats(self.breakfast_links[i]))
-                self.lunch_menu.append(self.get_stats(self.lunch_links[i]))
-                self.dinner_menu.append(self.get_stats(self.dinner_links[i]))
+        if self.day == Day.WEEKDAY:  
+            for link in self.breakfast_links:
+                self.breakfast_menu.append(self.get_stats(link))
+            for link in self.lunch_links:
+                self.lunch_menu.append(self.get_stats(link))
         else:
-            for i in range(4):
-                self.brunch_menu.append(self.get_stats(self.brunch_links[i]))
-                self.dinner_menu.append(self.get_stats(self.dinner_links[i]))
+            for link in self.brunch_links:
+                self.brunch_menu.append(self.get_stats(link))
+        for link in self.dinner_links:
+            self.dinner_menu.append(self.get_stats(link))
+
         print("Finished scraping website")
         print("-----------------")
     
@@ -175,7 +180,7 @@ class SatsScrape:
             if meal_property == 'name':
                 message = "".join([message, 
 f'''_{meal.get(meal_property, None)}_'''])
-            elif meal_property == self.nutrition[0]:
+            elif meal_property == 'Calorie':
                 message = "".join([message, f'''
     {meal_property}: {meal.get(meal_property, None)} Kcal'''])
             else:
