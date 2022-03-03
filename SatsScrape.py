@@ -9,6 +9,7 @@ from pprint import pprint
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
+
 class Day(Enum):
     WEEKDAY = 1
     WEEKEND = 2
@@ -72,41 +73,57 @@ class SatsScrape:
         # click "our food"
         self.driver.find_element_by_class_name("jss97").click()
         time.sleep(2)
+        i = 1
         if self.day == Day.WEEKDAY:
-            for i in range(1, 5):
-                # breakfast
-                if i < 4:
-                    try:
-                        xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[2]/div/div[2]/div/div[' + str(i) + ']/a'
-                        element = self.driver.find_element_by_xpath(xpath)
-                        self.breakfast_links.append(element.get_attribute('href'))
-                    except NoSuchElementException: pass
-                # lunch
+            # breakfast
+            while True:
+                try:
+                    print("finding")
+                    xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[2]/div/div[2]/div/div[' + str(i) + ']/a'
+                    element = self.driver.find_element_by_xpath(xpath)
+                    self.breakfast_links.append(element.get_attribute('href'))
+                    i += 1
+                except NoSuchElementException:
+                    i = 1 
+                    break
+            # lunch
+            while True:
                 try:
                     xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[3]/div/div[2]/div/div[' + str(i) + ']/a'
                     element = self.driver.find_element_by_xpath(xpath)
                     self.lunch_links.append(element.get_attribute('href'))
-                except NoSuchElementException: pass
-                # dinner
+                    i += 1
+                except NoSuchElementException: 
+                    i = 1
+                    break
+            # dinner
+            while True:
                 try: 
                     xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[4]/div/div[2]/div/div[' + str(i) + ']/a'
                     element = self.driver.find_element_by_xpath(xpath)
                     self.dinner_links.append(element.get_attribute('href'))
-                except NoSuchElementException: pass
+                    i += 1
+                except NoSuchElementException: 
+                    break
         else:
-            for i in range(1, 5):
+            while True:
                 # brunch
                 try:
                     xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[2]/div/div[2]/div/div[' + str(i) + ']/a'
                     element = self.driver.find_element_by_xpath(xpath)
                     self.brunch_links.append(element.get_attribute('href'))
-                except NoSuchElementException: pass
+                    i += 1
+                except NoSuchElementException: 
+                    i = 1
+                    break
                 # # dinner
                 try:
                     xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[3]/div/div[2]/div/div[' + str(i) + ']/a'
                     element = self.driver.find_element_by_xpath(xpath)
                     self.dinner_links.append(element.get_attribute('href'))
-                except NoSuchElementException: pass
+                    i += 1
+                except NoSuchElementException: 
+                    break
     
     def get_stats(self, link: str) -> "dict[str: str, str: float, str:float, str:float, str:float]":
         '''
