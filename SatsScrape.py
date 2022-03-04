@@ -1,11 +1,13 @@
 import os
 import time
-from selenium import webdriver
 import requests
-from enum import Enum
 import re
+from enum import Enum
 from pathlib import Path
+from pprint import pprint
 
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 
 class Day(Enum):
     WEEKDAY = 1
@@ -28,7 +30,7 @@ class SatsScrape:
         self.user = os.environ.get('USER')
         self.password = os.environ.get('PASSWORD')
         self.day = day
-        self.nutrition = ["Calories", "Protein", "Carbs", "Fats"]
+        self.nutrition = ("Calorie", "Protein", "Carbs", "Fat")
         # meal links
         if day == Day.WEEKDAY:
             self.breakfast_links = []
@@ -43,8 +45,7 @@ class SatsScrape:
         self.dinner_links = []
         self.dinner_menu = []
         self.tele_bot_api = os.environ.get('BOTAPI')
-        print(self.tele_bot_api)
-        self.chat_ids = ["-799638512", "-1001625632323"]
+        self.chat_ids = ["-1001625632323"]
         print("Webdriver initialised")
         print("-----------------")
     
@@ -85,32 +86,44 @@ class SatsScrape:
             for i in range(1, 5):
                 # breakfast
                 if i < 4:
-                    xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[2]/div/div[2]/div/div[' + str(i) + ']/a'
-                    element = self.driver.find_element_by_xpath(xpath)
-                    self.breakfast_links.append(element.get_attribute('href'))
+                    try:
+                        xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[2]/div/div[2]/div/div[' + str(i) + ']/a'
+                        element = self.driver.find_element_by_xpath(xpath)
+                        self.breakfast_links.append(element.get_attribute('href'))
+                    except NoSuchElementException: pass
+
+                #grab n go
+                    try:
+                        xpath = '/html/body/div/div/div/div/div/div/div[3]/div/div[5]/div['+ str(i) + ']/div[2]/div/div/a'
+                        element = self.driver.find_element_by_xpath(xpath)
+                        self.grabngo_links.append(element.get_attribute('href'))
+                    except NoSuchElementException: pass
                 # lunch
-                xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[3]/div/div[2]/div/div[' + str(i) + ']/a'
-                element = self.driver.find_element_by_xpath(xpath)
-                self.lunch_links.append(element.get_attribute('href'))
-                # dinner
-                xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[4]/div/div[2]/div/div[' + str(i) + ']/a'
-                element = self.driver.find_element_by_xpath(xpath)
-                self.dinner_links.append(element.get_attribute('href'))
-                #Sandwich
-                if i < 4:
-                    xpath = '/html/body/div/div/div/div/div/div/div[3]/div/div[5]/div[' + str(i) + ']/div[2]/div/div/a'
+                try:
+                    xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[3]/div/div[2]/div/div[' + str(i) + ']/a'
                     element = self.driver.find_element_by_xpath(xpath)
-                    self.grabngo_links.append(element.get_attribute('href'))
+                    self.lunch_links.append(element.get_attribute('href'))
+                except NoSuchElementException: pass
+                # dinner
+                try: 
+                    xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[4]/div/div[2]/div/div[' + str(i) + ']/a'
+                    element = self.driver.find_element_by_xpath(xpath)
+                    self.dinner_links.append(element.get_attribute('href'))
+                except NoSuchElementException: pass
         else:
             for i in range(1, 5):
                 # brunch
-                xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[2]/div/div[2]/div/div[' + str(i) + ']/a'
-                element = self.driver.find_element_by_xpath(xpath)
-                self.brunch_links.append(element.get_attribute('href'))
-                # dinner
-                xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[3]/div/div[2]/div/div['+ str(i) +']/a'
-                element = self.driver.find_element_by_xpath(xpath)
-                self.dinner_links.append(element.get_attribute('href'))
+                try:
+                    xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[2]/div/div[2]/div/div[' + str(i) + ']/a'
+                    element = self.driver.find_element_by_xpath(xpath)
+                    self.brunch_links.append(element.get_attribute('href'))
+                except NoSuchElementException: pass
+                # # dinner
+                try:
+                    xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[3]/div/div[2]/div/div[' + str(i) + ']/a'
+                    element = self.driver.find_element_by_xpath(xpath)
+                    self.dinner_links.append(element.get_attribute('href'))
+                except NoSuchElementException: pass
     
     def get_stats(self, link: str) -> "dict[str: str, str: float, str:float, str:float, str:float]":
         '''
@@ -125,10 +138,12 @@ class SatsScrape:
         name = self.driver.find_element_by_xpath('//*[@id="signup-modal-slide-description"]/div/div/div[2]/h3').text
         stats = {"name": name}
         for i in range(1, 5):
-            stat_full = self.driver.find_element_by_xpath("/html/body/div[2]/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div/div/div/div/p["+str(i)+"]")
-            stat_str = stat_full.text.split(" ")[-1]
-            stat_float = float(re.findall(r'\d+', stat_str)[0])
-            stats[self.nutrition[i - 1]] = stat_float
+            try:
+                stat_full = self.driver.find_element_by_xpath("/html/body/div[2]/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div/div/div/div/p["+str(i)+"]")
+                stat_str = stat_full.text.split(" ")[-1]
+                stat_float = float(re.findall(r'\d+', stat_str)[0])
+                stats[self.nutrition[i - 1]] = stat_float
+            except NoSuchElementException: pass
         return stats
     
     def get_all_meals(self):
@@ -156,59 +171,47 @@ class SatsScrape:
         '''
         Crafting a message for a specific given meal.
         '''
-        message = f'''
-_{meal['name']}_
-    {self.nutrition[0]}: {meal[self.nutrition[0]]}
-    {self.nutrition[1]}: {meal[self.nutrition[1]]}
-    {self.nutrition[2]}: {meal[self.nutrition[2]]}
-    {self.nutrition[3]}: {meal[self.nutrition[3]]}
-        '''
+        message = ''''''
+        for meal_property in meal.keys():
+            if meal_property == 'name':
+                message = "".join([message, 
+f'''_{meal.get(meal_property, None)}_'''])
+            elif meal_property == self.nutrition[0]:
+                message = "".join([message, f'''
+    {meal_property}: {meal.get(meal_property, None)} Kcal'''])
+            else:
+                message = "".join([message, f'''
+    {meal_property}: {meal.get(meal_property, None)} g'''])
         return message.replace("&", "%26")
+    
+    def craft_message_menu(self, menu: list, title: str) -> str:
+        '''
+        crafting a message for a specific given menu
+        input:
+            menu <list> e.g. self.breakfast_menu
+            title <str>
+        output:
+            message <str>
+        '''
+        message = f'''*{title}*'''
+        for meal in menu:
+            message = "".join([message, f'''
+{self.craft_message_meal(meal)}'''])
+        return message + "\n"
     
     def craft_message_all(self) -> str:
         '''
         Crafting a message for all the meals for that day.
         '''
         if self.day == Day.WEEKDAY:
-            return f'''
-*Dining Hall Meals For Today*
-*BREAKFAST*\
-{self.craft_message_meal(self.breakfast_menu[0])}\
-{self.craft_message_meal(self.breakfast_menu[1])}\
-{self.craft_message_meal(self.breakfast_menu[2])}\
-
-*LUNCH*\
-{self.craft_message_meal(self.lunch_menu[0])}\
-{self.craft_message_meal(self.lunch_menu[1])}\
-{self.craft_message_meal(self.lunch_menu[2])}\
-{self.craft_message_meal(self.lunch_menu[3])}\
-
-*DINNER*\
-{self.craft_message_meal(self.dinner_menu[0])}\
-{self.craft_message_meal(self.dinner_menu[1])}\
-{self.craft_message_meal(self.dinner_menu[2])}\
-{self.craft_message_meal(self.dinner_menu[3])}\
-
-*GRAB N GO*\
-{self.craft_message_meal(self.grabngo_menu[0])}\
-{self.craft_message_meal(self.grabngo_menu[1])}\
-{self.craft_message_meal(self.grabngo_menu[2])}\
-            '''
+            return f'''*Dining Hall Meals For Today*
+{self.craft_message_menu(self.breakfast_menu, "BREAKFAST")}
+{self.craft_message_menu(self.lunch_menu, "LUNCH")}
+{self.craft_message_menu(self.dinner_menu, "DINNER")}'''
         else:
-            return f'''
-*Dining Hall Meals For Today*
-*BRUNCH*\
-{self.craft_message_meal(self.brunch_menu[0])}\
-{self.craft_message_meal(self.brunch_menu[1])}\
-{self.craft_message_meal(self.brunch_menu[2])}\
-{self.craft_message_meal(self.brunch_menu[3])}\
-
-*DINNER*\
-{self.craft_message_meal(self.dinner_menu[0])}\
-{self.craft_message_meal(self.dinner_menu[1])}\
-{self.craft_message_meal(self.dinner_menu[2])}\
-{self.craft_message_meal(self.dinner_menu[3])}\
-            '''
+            return f'''*Dining Hall Meals For Today*
+{self.craft_message_menu(self.brunch_menu, "BRUNCH")}
+{self.craft_message_menu(self.dinner_menu, "DINNER")}'''
     
     def send_message(self, message: str):
         '''
@@ -221,8 +224,4 @@ _{meal['name']}_
             requests.get(message_url)
         print("Message Sent")
         print("-----------------")
-    
-#TODO custom message e.g. most protein etc for more functions - 
-# used the craft_message_meal for the custom one
-
 
