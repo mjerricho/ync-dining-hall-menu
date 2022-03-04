@@ -7,7 +7,9 @@ if __name__ == "__main__":
     print(f"day is {day}")
     sats_scrape = SatsScrape("chromedriver", day)
     sats_scrape.login()
+    #ONLY UNCOMMENT FOR TESTING PURPOSES
     sats_scrape.go_tomorrow()
+    
     sats_scrape.get_meal_links()
     sats_scrape.get_all_meals()
     message = sats_scrape.craft_message_all()
