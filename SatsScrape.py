@@ -35,6 +35,8 @@ class SatsScrape:
             self.breakfast_menu = []
             self.lunch_links = []
             self.lunch_menu = []
+            self.grabngo_links = []
+            self.grabngo_menu = []
         else:
             self.brunch_links = []
             self.brunch_menu = []
@@ -60,6 +62,14 @@ class SatsScrape:
         self.driver.find_element_by_id("submitButton").click()
         print("Logged in")
         print("-----------------")
+    
+    def go_tomorrow(self) -> None:
+        '''
+        FOR TESTING PURPOSES, GO TO NEXT DAY
+        '''
+        tomorrow = self.driver.find_element_by_xpath('//*[@id="root"]/div/div/div/div/div/div[2]/div/div[3]/div/button[2]/span[1]')
+        tomorrow.click()
+        time.sleep(2)
 
     def get_meal_links(self) -> None:
         '''
@@ -86,6 +96,11 @@ class SatsScrape:
                 xpath = '//*[@id="root"]/div/div/div/div/div/div[3]/div/div[4]/div/div[2]/div/div[' + str(i) + ']/a'
                 element = self.driver.find_element_by_xpath(xpath)
                 self.dinner_links.append(element.get_attribute('href'))
+                #Sandwich
+                if i < 4:
+                    xpath = '/html/body/div/div/div/div/div/div/div[3]/div/div[5]/div[' + str(i) + ']/div[2]/div/div/a'
+                    element = self.driver.find_element_by_xpath(xpath)
+                    self.grabngo_links.append(element.get_attribute('href'))
         else:
             for i in range(1, 5):
                 # brunch
@@ -127,8 +142,9 @@ class SatsScrape:
             for i in range(4):
                 if i < 3:
                     self.breakfast_menu.append(self.get_stats(self.breakfast_links[i]))
+                    self.grabngo_menu.append(self.get_stats(self.grabngo_links[i]))
                 self.lunch_menu.append(self.get_stats(self.lunch_links[i]))
-                self.dinner_menu.append(self.get_stats(self.dinner_links[i]))
+                self.dinner_menu.append(self.get_stats(self.dinner_links[i])) 
         else:
             for i in range(4):
                 self.brunch_menu.append(self.get_stats(self.brunch_links[i]))
@@ -172,6 +188,11 @@ _{meal['name']}_
 {self.craft_message_meal(self.dinner_menu[1])}\
 {self.craft_message_meal(self.dinner_menu[2])}\
 {self.craft_message_meal(self.dinner_menu[3])}\
+
+*GRAB N GO*\
+{self.craft_message_meal(self.grabngo_menu[0])}\
+{self.craft_message_meal(self.grabngo_menu[1])}\
+{self.craft_message_meal(self.grabngo_menu[2])}\
             '''
         else:
             return f'''
