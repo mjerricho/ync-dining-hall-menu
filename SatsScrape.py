@@ -157,7 +157,7 @@ class SatsScrape:
             for i in range(4):
                 if i < 3:
                     self.breakfast_menu.append(self.get_stats(self.breakfast_links[i]))
-                    self.grabngo_menu.append(self.get_stats(self.grabngo_links[i]))
+                    # self.grabngo_menu.append(self.get_stats(self.grabngo_links[i]))
                 self.lunch_menu.append(self.get_stats(self.lunch_links[i]))
                 self.dinner_menu.append(self.get_stats(self.dinner_links[i])) 
         else:
