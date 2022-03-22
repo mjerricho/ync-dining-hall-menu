@@ -11,7 +11,34 @@ The project repository can be found at https://github.com/mjerricho/ync-dining-h
 
 To join the Telegram Channel where we generate the messages, join this group https://t.me/YNCDiningMenu
 
-## Installation
+## Version 2 - Scrapy + Selenium (Thanks to Bryan)
+### Set-up
+Run the following in your terminal (remove square brackets, keep double quotes (where applicable), replace placeholder values):
+
+```
+export USER=[your_username]
+export PASS=[your_password]
+export DT="[datetime_from_chrome _request_header]"
+export SGT="[sgt_from_chrome _request_header]"
+export AUTHORIZATION="[authorization_from_chrome _request_header]"
+export XID="[xid_from_chrome _request_header]"
+```
+
+### How to run
+1. Run `scrapy crawl menuscraper -o menu.json` (run daily at midnight to update menu for the day)
+2. Run `scrapy crawl scrapesatsapi -o satsapi.json` (only need to run weekly, which is when SATS uploads the following week's menu; or run whenever errors noticed, or menu seems out of sync)
+3. Run `python3 textfilegen.py`
+4. Stonks (menu written in summary.text)
+
+### Copy-pastable Scripts
+```
+scrapy crawl menuscraper -o menu.json
+scrapy crawl scrapesatsapi -o satsapi.json
+python3 textfilegen.py
+```
+
+## Version 1 - Only Selenium
+### Installation
 1. [Add Username and Password as environment variables.](https://phoenixnap.com/kb/set-environment-variable-mac).
 2. Install [webdriver](https://chromedriver.chromium.org/downloads) into the project root folder e.g. chromedriver. If you are using another driver type, change the webdriver name in the `SatsScrape.py`.
 
@@ -30,5 +57,5 @@ Get `https://api.telegram.org/bot<TOKEN>/GetUpdates`. Replace the `<TOKEN>` with
 ### To send messages
 Get `https://api.telegram.org/bot<TOKEN>/sendMessage?chat_id=<CHATID>&parse_mode=Markdown&text=<MESSAGE>`.
 
-### Disclaimer
+# Disclaimer
 _SATS_Scraping contain links to external websites that are not provided or maintained by us. Please note we do not guarantee the accuracy, relevance, timeliness, or completeness of any information on these external websites._
