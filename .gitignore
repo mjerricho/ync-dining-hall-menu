@@ -142,3 +142,7 @@ chromedriver*
 # automator
 ync-dining-menu-automator.app
 run.sh
+
+# anything extra
+*.json
+*.txt

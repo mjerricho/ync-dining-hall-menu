@@ -13,7 +13,7 @@ To join the Telegram Channel where we generate the messages, join this group htt
 
 ## Version 2 - Scrapy + Selenium (Thanks to Bryan)
 ### Set-up
-Run the following in your terminal (remove square brackets, keep double quotes (where applicable), replace placeholder values):
+1. Run the following in your terminal (remove square brackets, keep double quotes (where applicable), replace placeholder values):
 
 ```
 export USER=[your_username]
@@ -23,6 +23,8 @@ export SGT="[sgt_from_chrome _request_header]"
 export AUTHORIZATION="[authorization_from_chrome _request_header]"
 export XID="[xid_from_chrome _request_header]"
 ```
+2. Install the chromedriver using `brew install -cask chromedriver` for Mac. 
+3. Then, install [webdriver](https://chromedriver.chromium.org/downloads) into the project root folder e.g. chromedriver.
 
 ### How to run
 1. Run `scrapy crawl menuscraper -o menu.json` (run daily at midnight to update menu for the day)

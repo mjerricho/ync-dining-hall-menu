@@ -16,7 +16,7 @@ class menuspider(scrapy.Spider):
         options = webdriver.ChromeOptions()
         options.add_argument("--window-size=1920,1080")
         options.add_argument("--start-maximized")
-        options.headless = True
+        options.headless =  False
         self.driver = webdriver.Chrome(options=options)
 
     def parse(self, response):
