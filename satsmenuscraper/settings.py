@@ -13,7 +13,7 @@ BOT_NAME = 'satsmenuscraper'
 SPIDER_MODULES = ['satsmenuscraper.spiders']
 NEWSPIDER_MODULE = 'satsmenuscraper.spiders'
 SELENIUM_DRIVER_NAME = 'chrome'
-SELENIUM_DRIVER_EXECUTABLE_PATH = "/Users/marcellinusjerricho/school/ynus/project/ync-dining-hall-menu/satsmenuscraper/chromedriver"
+SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 SELENIUM_DRIVER_ARGUMENTS = ['--headless']
 
 
