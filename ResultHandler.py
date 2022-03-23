@@ -11,27 +11,29 @@ class ResultHandler:
         with open(menu_api_json) as apijsondata:
             self.api_data = json.load(apijsondata)[0]["data"]
         self.tele_bot_api = os.environ.get('BOTAPI')
-        self.chat_ids = ["-1001625632323"]
-        # self.chat_ids = ["-799638512"]
+        # Channel
+        # self.chat_ids = ["-1001625632323"]
+        # Testing
+        self.chat_ids = ["-799638512"]
 
     def craft_message(self):
-        self.text = "** DINING HALL MENU FOR TODAY: **\n\n"
+        self.text = "* DINING HALL MENU FOR TODAY: *\n\n"
         for meal in self.menu_data:
             if str(meal["name"]) == "Grab & Go":
-                self.text += "**" + str(meal["name"]) + "**" + "\n" + "\n"
+                self.text += "*" + str(meal["name"]) + "*" + "\n" + "\n"
                 for dish in meal["setmeals"]:
                     del dish["name"]
                     dish.update(
                         (list(filter(lambda x: (x["qrCode"] == dish["mealurls"]), self.api_data)))[0]
                     )
                     self.text += (
-                        "**"
+                        "*"
                         + str(dish["mealtype"])
-                        + ":**"
+                        + ":*"
                         + "\n"
-                        + "__"
+                        + "_"
                         + str(dish["name"])
-                        + "__"
+                        + "_"
                         + "\n"
                         + "\tCalories: "
                         + str(dish["totalCalorie"])
@@ -52,16 +54,16 @@ class ResultHandler:
                         + "\n"
                     )
             else:
-                self.text += "**" + str(meal["name"]) + "**" + "\n" + "\n"
+                self.text += "*" + str(meal["name"]) + "*" + "\n" + "\n"
                 for dish in meal["setmeals"]:
                     del dish["name"]
                     dish.update(
                         (list(filter(lambda x: (x["qrCode"] == dish["mealurls"]), self.api_data)))[0]
                     )
                     self.text += (
-                        "__"
+                        "_"
                         + str(dish["name"])
-                        + "__"
+                        + "_"
                         + "\n"
                         + "\tCalories: "
                         + str(dish["totalCalorie"])
