@@ -11,7 +11,8 @@ class ResultHandler:
         with open(menu_api_json) as apijsondata:
             self.api_data = json.load(apijsondata)[0]["data"]
         self.tele_bot_api = os.environ.get('BOTAPI')
-        self.chat_ids = ["-1001625632323"]
+        # self.chat_ids = ["-1001625632323"]
+        self.chat_ids = ["-799638512"]
 
     def craft_message(self):
         self.text = "** DINING MENU FOR TODAY: **\n\n"
@@ -80,7 +81,7 @@ class ResultHandler:
                         + "\n"
                         + "\n"
                     )
-        return self.text
+        return self.text.replace("&", "%26")
 
     def write_data(self):
         with open("menu2.json", "w") as file:
